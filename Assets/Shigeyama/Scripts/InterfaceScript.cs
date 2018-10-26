@@ -15,4 +15,7 @@ public interface IItem
     // 各アイテムクラスでそれぞれ設定する
     Vector3 LocalPosition();
     Vector3 LocalRotation();
+
+    Vector3 PlayerColliderSize();
+    Vector3 PlayerColliderCenter();
 }

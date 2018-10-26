@@ -10,16 +10,22 @@ public class CardboardItem : MonoBehaviour, IItem
     Vector3 catchPosition;
     Vector3 catchRotation;
 
+    Vector3 playerColliderSize;
+    Vector3 playerColliderCenter;
+
     // Use this for initialization
     void Start()
     {
         rd = GetComponent<Rigidbody>();
 
-        catchPosition = new Vector3(0, -0.5f, 0.7f);
+        catchPosition = new Vector3(0, 0.5f, 0.6f);
         catchRotation = new Vector3(0, 90, 0);
+
+        playerColliderSize = new Vector3(0.8f, 1.4f, 1.3f);
+        playerColliderCenter = new Vector3(0, 0.8f, 0.3f);
     }
 
-    // 段ボール側で何か機能をつける場合はここに書くといいはず
+    // 段ボール側でプレイヤーがアクセスする機能をつける場合はここに書くといいはず
     public void PlayItem(GameObject player)
     {
 
@@ -35,4 +41,13 @@ public class CardboardItem : MonoBehaviour, IItem
         return catchRotation;
     }
 
+    public Vector3 PlayerColliderSize()
+    {
+        return playerColliderSize;
+    }
+
+    public Vector3 PlayerColliderCenter()
+    {
+        return playerColliderCenter;
+    }
 }

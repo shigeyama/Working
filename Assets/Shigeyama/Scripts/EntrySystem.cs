@@ -14,7 +14,7 @@ public class EntrySystem : SingletonMonoBehaviour<EntrySystem>
     }
 
     // 実際は-1スタート
-    public static int[] playerNumber = { 0, 1, 2, 3 };
+    public static int[] playerNumber = { 1, 2, 3, 4 };
 
     int playerCount = 0;
 
@@ -27,9 +27,10 @@ public class EntrySystem : SingletonMonoBehaviour<EntrySystem>
     // Update is called once per frame
     void Update()
     {
-        if (playerCount != 4)
+        if (playerCount < 4)
         {
-            for (int i = 0; i < 4; i++)
+            // int = 0 かも?
+            for (int i = 1; i < 5; i++)
             {
                 //各プレイヤーの対応コントローラーを設定する
                 if (GamePad.GetButtonDown(GamePad.Button.B, (GamePad.Index)i))
