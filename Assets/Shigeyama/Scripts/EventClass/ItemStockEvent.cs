@@ -10,10 +10,6 @@ using UnityEngine.UI;
 
 public class ItemStockEvent : MonoBehaviour, IGimmick
 {
-    // イベントごとに時間を決める
-    [SerializeField, Header("Time")]
-    float eventTimer = 20;
-
     // 最大ストック数、初期値
     const int defaultStock = 5;
 
@@ -22,10 +18,6 @@ public class ItemStockEvent : MonoBehaviour, IGimmick
 
     [SerializeField, Header("Icon")]
     GameObject eventAlertIconPrefab;
-
-    // プレイヤーがギミックを動かしているか判断するフラグ
-    bool isEvent;
-
     //---------------------------------
 
     // AIが移動可能かどうか
@@ -60,19 +52,6 @@ public class ItemStockEvent : MonoBehaviour, IGimmick
 
         // ストックの初期値
         stock = defaultStock;
-
-        // 移動可能に設定(本来はいらない)
-        isAIMove = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // テスト用インプット
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            StockDecrement(5);
-        }
     }
 
     /// <summary>
@@ -139,6 +118,10 @@ public class ItemStockEvent : MonoBehaviour, IGimmick
         return aiMovePosObj;
     }
 
+    /// <summary>
+    /// AIがイベントを終了したら移動可能にする
+    /// </summary>
+    /// <param name="movePosObj"></param>
     public void IsAIMoveRelease(GameObject movePosObj)
     {
         for (int i = 0; i < aiMovePosObjects.Length; i++)
@@ -164,26 +147,11 @@ public class ItemStockEvent : MonoBehaviour, IGimmick
 
         eventAlertIcon.GetComponent<AlertIconManager>().GimmickObj = gameObject;
 
-        float timer = 0;
+        float timeInterval = 20;
 
-        // 指定した時間までタイマーを加算する、またプレイヤーが行動を始めた場合もタイマーを止める
-        while (timer < eventTimer)
-        {
-            timer += Time.deltaTime;
-
-            if (timer > eventTimer)
-            {
-                timer = eventTimer;
-            }
-
-            if (isEvent)
-            {
-                break;
-            }
-            eventAlertIcon.transform.GetChild(2).GetComponent<Image>().fillAmount = timer / eventTimer;
-            
-            yield return null;
-        }
+        // 時間を計測
+        StartCoroutine(eventAlertIcon.GetComponent<AlertIconManager>().EventAlertTimer(timeInterval));
+        yield return new WaitForSeconds(timeInterval);
 
         // スコアの減少(クレーム)
         //ScoreManager.Instance.ScoreDecrement();
@@ -213,25 +181,10 @@ public class ItemStockEvent : MonoBehaviour, IGimmick
     {
         Debug.Log("Addstock");
 
-        // プレイヤーが行動を開始
-        isEvent = true;
+        float timeInterval = 2;
 
-        // タイマー、時間を図る変数
-        float timer = 0;
-
-        // 補充にかかる時間
-        float addTimer = 2;
-
-        // 補充までにかかる時間
-        // 補充アニメーションもここで流す
-        while (timer < addTimer)
-        {
-            timer += Time.deltaTime;
-
-            eventAlertIcon.transform.GetChild(0).GetComponent<Image>().fillAmount = timer / addTimer;
-
-            yield return null;
-        }
+        StartCoroutine(eventAlertIcon.GetComponent<AlertIconManager>().PlayerActionTimer(timeInterval));
+        yield return new WaitForSeconds(timeInterval);
 
         // 補充完了
         stock = defaultStock;
@@ -241,8 +194,5 @@ public class ItemStockEvent : MonoBehaviour, IGimmick
 
         // プレイヤーが動けるか判断する変数ギミック終了時「false」に設定
         player.GetComponent<PlayerSystem>().IsEvent = false;
-
-        // プレイヤーが行動を終了
-        isEvent = false;
     }
 }

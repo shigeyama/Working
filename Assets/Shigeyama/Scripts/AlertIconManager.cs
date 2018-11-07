@@ -15,6 +15,8 @@ public class AlertIconManager : MonoBehaviour
 
     bool isPlayerNear;
 
+    bool isPlayerAction;
+
     // Use this for initialization
     void Start()
     {
@@ -37,7 +39,7 @@ public class AlertIconManager : MonoBehaviour
         }
 
         // プレイヤーが近い(小さく表示)
-        if (isPlayerNear)
+        if (isPlayerNear || isPlayerAction)
         {
             IconSizeDown();
         }
@@ -75,5 +77,52 @@ public class AlertIconManager : MonoBehaviour
     public GameObject GimmickObj
     {
         set { gimmickObj = value; }
+    }
+
+    public IEnumerator EventAlertTimer(float eventTimer)
+    {
+        float timer = 0;
+
+        // 指定した時間までタイマーを加算する、またプレイヤーが行動を始めた場合もタイマーを止める
+        while (timer < eventTimer)
+        {
+            timer += Time.deltaTime;
+
+            if (timer > eventTimer)
+            {
+                timer = eventTimer;
+            }
+
+            if (isPlayerAction)
+            {
+                break;
+            }
+            transform.GetChild(2).GetComponent<Image>().fillAmount = timer / eventTimer;
+
+            yield return null;
+        }
+        yield return null;
+    }
+
+    public IEnumerator PlayerActionTimer(float eventTimer)
+    {
+        float timer = 0;
+
+        isPlayerAction = true;
+
+        // 指定した時間までタイマーを加算する、またプレイヤーが行動を始めた場合もタイマーを止める
+        while (timer < eventTimer)
+        {
+            timer += Time.deltaTime;
+
+            if (timer > eventTimer)
+            {
+                timer = eventTimer;
+            }
+
+            transform.GetChild(0).GetComponent<Image>().fillAmount = timer / eventTimer;
+
+            yield return null;
+        }
     }
 }

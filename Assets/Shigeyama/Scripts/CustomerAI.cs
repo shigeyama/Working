@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class CustomerAI : MonoBehaviour
 {
+
     // AIの状態を管理するステート
     public enum CustomerAIState
     {
@@ -12,12 +13,15 @@ public class CustomerAI : MonoBehaviour
         IDLE,
         MOVE,
         ACTION,
-        ACCIDENT
+        ACCIDENT,
+        REGISTERMOVE,
+        REGISTERIDLE,
+        REGISTERACTION
     }
 
     // ステートの宣言
     CustomerAIState state;
-
+    
     // NavMeshAgentの宣言
     NavMeshAgent agent;
 
@@ -33,11 +37,16 @@ public class CustomerAI : MonoBehaviour
     // 実際に移動するポジションを記憶する変数
     GameObject movePosObj;
 
+    // レジの順番
+    int registerNum;
+
     // タイマー
     float timer = 0;
 
     // 棚から商品を取った数
     int stockCount = 0;
+
+    bool isMoveEnd = false;
 
     // Use this for initialization
     void Start()
@@ -57,7 +66,7 @@ public class CustomerAI : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // 各ステートを選択と実行
+        // 各ステートを実行
         switch (state)
         {
             case CustomerAIState.CHECK:
@@ -75,6 +84,15 @@ public class CustomerAI : MonoBehaviour
             case CustomerAIState.ACCIDENT:
                 Accident();
                 break;
+            case CustomerAIState.REGISTERMOVE:
+                RegisterMove();
+                break;
+            case CustomerAIState.REGISTERIDLE:
+                RegisterIdle();
+                break;
+            case CustomerAIState.REGISTERACTION:
+                RegisterAction();
+                break;
         }
 
         Debug.Log(state);
@@ -89,9 +107,17 @@ public class CustomerAI : MonoBehaviour
         
         for (int i = 0; i < shelfObj.Length; i++)
         {
-            if (shelfObj[i].GetComponent<ItemStockEvent>().CheckPos() && shelfObj[i] != actionObj)
+            if (shelfObj[i].GetComponent<ItemStockEvent>().CheckPos() && shelfObj[i] != actionObj && stockCount < 2)
             {
                 canMovePosObjcts.Add(shelfObj[i]);
+            }
+        }
+
+        for (int i = 0; i < registerObj.Length; i++)
+        {
+            if (registerObj[i].GetComponent<RegisterEvent>().CheckPos() && stockCount > 0)
+            {
+                canMovePosObjcts.Add(registerObj[i]);
             }
         }
 
@@ -101,9 +127,19 @@ public class CustomerAI : MonoBehaviour
 
             actionObj = canMovePosObjcts[rnd];
 
-            movePosObj = actionObj.GetComponent<ItemStockEvent>().AIMovePosObj();
+            if (actionObj.GetComponent<ItemStockEvent>())
+            {
+                movePosObj = actionObj.GetComponent<ItemStockEvent>().AIMovePosObj();
 
-            state = CustomerAIState.MOVE;
+                state = CustomerAIState.MOVE;
+            }
+            else
+            {
+
+                registerNum = actionObj.GetComponent<RegisterEvent>().AIMovePosObjNum();
+                movePosObj = actionObj.GetComponent<RegisterEvent>().AIMovePosObj();
+                state = CustomerAIState.REGISTERMOVE;
+            }
         }
         else
         {
@@ -139,6 +175,7 @@ public class CustomerAI : MonoBehaviour
         }
     }
 
+
     /// <summary>
     /// ギミックの発動
     /// </summary>
@@ -163,5 +200,50 @@ public class CustomerAI : MonoBehaviour
     void Accident()
     {
 
+    }
+
+    void RegisterMove()
+    {
+        agent.SetDestination(movePosObj.transform.position);
+
+        if (Vector3.Distance(transform.position, movePosObj.transform.position) < 0.5f)
+        {
+            if (isMoveEnd)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                state = CustomerAIState.REGISTERIDLE;
+            }
+        }
+    }
+
+    void RegisterIdle()
+    {
+        if (registerNum <= 0)
+        {
+            actionObj.GetComponent<RegisterEvent>().IsPlayerActionEnd = false;
+            state = CustomerAIState.REGISTERACTION;
+        }
+        else if (actionObj.GetComponent<RegisterEvent>().IsAIMoveLine(registerNum))
+        {
+            movePosObj = actionObj.GetComponent<RegisterEvent>().AIMoveLineObj(registerNum);
+            registerNum--;
+            state = CustomerAIState.REGISTERMOVE;
+        }
+    }
+
+    void RegisterAction()
+    {
+        actionObj.GetComponent<RegisterEvent>().IsCustomer = true;
+
+        if (actionObj.GetComponent<RegisterEvent>().IsPlayerActionEnd)
+        {
+            actionObj.GetComponent<RegisterEvent>().IsCustomer = false;
+            isMoveEnd = true;
+            movePosObj = GameObject.Find("EntryPos");
+            state = CustomerAIState.REGISTERMOVE;
+        }
     }
 }
