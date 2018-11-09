@@ -1032,7 +1032,7 @@ Transform:
   - {fileID: 1583969420}
   - {fileID: 2072523685}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &406033570
 GameObject:
@@ -2383,6 +2383,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1045937141}
+  - component: {fileID: 1045937142}
   m_Layer: 0
   m_Name: AIGenerator
   m_TagString: Untagged
@@ -2403,6 +2404,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1045937142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1045937140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e9330c072146854f97c5dfa49339cb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aiObjPre: {fileID: 1367490838585078, guid: a21d1c8e83b226742afcf2b9f76ad8f3, type: 2}
 --- !u!1 &1053011288
 GameObject:
   m_ObjectHideFlags: 0
@@ -4041,7 +4054,7 @@ RectTransform:
   - {fileID: 448683482}
   - {fileID: 1152645026}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

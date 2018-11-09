@@ -97,11 +97,10 @@ public class AlertIconManager : MonoBehaviour
             {
                 break;
             }
-            transform.GetChild(2).GetComponent<Image>().fillAmount = timer / eventTimer;
-
             yield return null;
+
+            transform.GetChild(2).GetComponent<Image>().fillAmount = timer / eventTimer;
         }
-        yield return null;
     }
 
     public IEnumerator PlayerActionTimer(float eventTimer)
@@ -120,9 +119,9 @@ public class AlertIconManager : MonoBehaviour
                 timer = eventTimer;
             }
 
-            transform.GetChild(0).GetComponent<Image>().fillAmount = timer / eventTimer;
-
             yield return null;
+
+            transform.GetChild(0).GetComponent<Image>().fillAmount = timer / eventTimer;
         }
     }
 }

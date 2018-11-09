@@ -107,7 +107,7 @@ public class CustomerAI : MonoBehaviour
         
         for (int i = 0; i < shelfObj.Length; i++)
         {
-            if (shelfObj[i].GetComponent<ItemStockEvent>().CheckPos() && shelfObj[i] != actionObj && stockCount < 2)
+            if (shelfObj[i].GetComponent<ItemStockEvent>().CheckPos() && shelfObj[i] != actionObj && stockCount < 4)
             {
                 canMovePosObjcts.Add(shelfObj[i]);
             }
@@ -210,6 +210,7 @@ public class CustomerAI : MonoBehaviour
         {
             if (isMoveEnd)
             {
+                AIGenerator.Instance.RemoveList(gameObject);
                 Destroy(gameObject);
             }
             else

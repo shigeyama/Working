@@ -1,20 +1,15 @@
 fileFormatVersion: 2
-guid: 99b3cf982c2d58341b9f3160b479a8d7
+guid: d3246a0327073ae45bd9d3f68aca100b
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
-    2100000: palette
+    2100000: palette.004
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Shelf None
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: palette
-    second: {fileID: 2100000, guid: d9c4c256081834d4083ee3062009172e, type: 3}
+    4300000: Counter
+  externalObjects: {}
   materials:
     importMaterials: 1
     materialName: 0
